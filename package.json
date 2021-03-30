@@ -27,7 +27,7 @@
   },
   "lint-staged": {
     "*.js": "eslint",
-    "*.js": "eslint"
+    "*.jsx": "eslint"
   },
   "husky": {
     "hooks": {
