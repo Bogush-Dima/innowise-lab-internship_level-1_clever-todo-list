@@ -1,8 +1,17 @@
 import React from 'react';
-import { StyledDay, StyledWrapper, StyledDaysWrapper, StyledMonth } from './Styled';
+import {
+  StyledDayCard,
+  StyledDay,
+  StyledWrapper,
+  StyledDaysWrapper,
+  StyledMonth,
+  StyledDotsWrapper,
+  StyledInProgressDots,
+  StyledDoneDots,
+} from './Styled';
 
 export const Calendar = () => {
-  const today = new Date();
+  const today = new Date(2021, 1, 1);
   const todayYear = today.getFullYear();
   const todayMonthStr = today.toLocaleDateString('en-us', { month: 'long' });
   const todayMonthNum = today.getMonth();
@@ -25,10 +34,16 @@ export const Calendar = () => {
       <StyledMonth>{todayMonthStr}</StyledMonth>
       <StyledDaysWrapper>
         {allDaysArr.map(({ date, day }) => (
-          <StyledDay>
-            <p>{date}</p>
-            <p>{day}</p>
-          </StyledDay>
+          <StyledDayCard>
+            <StyledDay>
+              <p>{date}</p>
+              <p>{day}</p>
+            </StyledDay>
+            <StyledDotsWrapper>
+              <StyledInProgressDots />
+              <StyledDoneDots />
+            </StyledDotsWrapper>
+          </StyledDayCard>
         ))}
       </StyledDaysWrapper>
     </StyledWrapper>
