@@ -11,7 +11,7 @@ import {
 } from './Styled';
 
 export const Calendar = () => {
-  const today = new Date(2021, 1, 1);
+  const today = new Date();
   const todayYear = today.getFullYear();
   const todayMonthStr = today.toLocaleDateString('en-us', { month: 'long' });
   const todayMonthNum = today.getMonth();
@@ -20,9 +20,11 @@ export const Calendar = () => {
   const allDaysArr = [];
 
   for (let i = todayDate; i <= lastDay; i += 1) {
+    const thisDate = new Date(todayYear, todayMonthNum, i);
     const obj = {
+      key: Number(thisDate),
       date: i,
-      day: new Date(todayYear, todayMonthNum, i).toLocaleDateString('en-us', {
+      day: thisDate.toLocaleDateString('en-us', {
         weekday: 'long',
       }),
     };
@@ -33,8 +35,8 @@ export const Calendar = () => {
     <StyledWrapper>
       <StyledMonth>{todayMonthStr}</StyledMonth>
       <StyledDaysWrapper>
-        {allDaysArr.map(({ date, day }) => (
-          <StyledDayCard>
+        {allDaysArr.map(({ key, date, day }) => (
+          <StyledDayCard key={key}>
             <StyledDay>
               <p>{date}</p>
               <p>{day}</p>

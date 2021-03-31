@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledWrapper = styled.section`
-  background: gray;
+  background: #80808047;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,9 @@ export const StyledWrapper = styled.section`
 
 export const StyledDaysWrapper = styled.div`
   overflow: auto;
-  padding-bottom: 30px;
+  background: #ffffff7a;
+  padding: 30px 10px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -25,6 +27,7 @@ export const StyledMonth = styled.p`
 export const StyledDayCard = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
 `;
 
 export const StyledDay = styled.div`
