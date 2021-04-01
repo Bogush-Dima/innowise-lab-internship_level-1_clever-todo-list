@@ -1,7 +1,8 @@
 import React from 'react';
-// import { Enter } from 'components/Enter/Enter';
+import { Redirect, Route, Switch } from 'react-router';
+import { Enter } from 'components/Enter/Enter';
 import { TodoList } from 'components/TodoList/TodoList';
-// import { CreateTodos } from 'components/CreateTodos/CreateTodos';
+import { CreateTodos } from 'components/CreateTodos/CreateTodos';
 import { Header } from 'components/Header/Header';
 import { StyledGlobal, StyledApp } from './Styled';
 
@@ -10,9 +11,13 @@ export const App = () => (
     <StyledGlobal />
     <StyledApp>
       <Header />
-      {/* <Enter /> */}
-      <TodoList />
-      {/* <CreateTodos /> */}
+      <Switch>
+        <Route exact path="/signIn" render={() => <Enter method="signIn" />} />
+        <Route exact path="/signUp" render={() => <Enter method="signUp" />} />
+        <Route exact path="/todolist" component={TodoList} />
+        <Route exact path="/createTodos" component={CreateTodos} />
+        <Redirect to="signIn" />
+      </Switch>
     </StyledApp>
   </>
 );

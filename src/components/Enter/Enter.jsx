@@ -1,13 +1,17 @@
 import React from 'react';
-import { Athorization } from './Authoriazation/Authorization';
-import { SignIn } from './SignIn/SignIn';
+import PropTypes from 'prop-types';
+import { StyledWrapper, StyledForm, StyledInput } from './Styled';
 
-export const Enter = () => (
-  <>
-    <header className="header">Header</header>
-    <div className="wrapper">
-      <Athorization />
-      <SignIn />
-    </div>
-  </>
+export const Enter = ({ method }) => (
+  <StyledWrapper>
+    <StyledForm>
+      <StyledInput type="email" placeholder="email" />
+      <StyledInput type="password" placeholder="password" />
+      <button type="button">{method === 'signUp' ? 'Sign Up' : 'Sign In'}</button>
+    </StyledForm>
+  </StyledWrapper>
 );
+
+Enter.propTypes = {
+  method: PropTypes.string.isRequired,
+};
