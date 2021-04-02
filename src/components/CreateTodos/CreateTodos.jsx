@@ -6,7 +6,12 @@ import {
   StyledTextarea,
   StyledTitle,
   StyledInput,
-  StyledUl,
+  StyledMainUl,
+  StyledDateUl,
+  StyledDate,
+  StyledTodo,
+  StyledName,
+  StyledDesc,
 } from './Styled';
 
 export class CreateTodos extends Component {
@@ -63,14 +68,30 @@ export class CreateTodos extends Component {
       this.setState({ date: event.target.value });
     };
 
+    const createTodosElements = () => {
+      const datesArr = Object.keys(todoList);
+      return datesArr.map((key) => (
+        <StyledDateUl key={key}>
+          <StyledDate>{key}</StyledDate>
+          {
+            // eslint-disable-next-line no-shadow
+            todoList[key].map(({ key, todoName, todoDescription }) => (
+              <StyledTodo key={key}>
+                <StyledName>{todoName}</StyledName>
+                <StyledDesc>{todoDescription}</StyledDesc>
+              </StyledTodo>
+            ))
+          }
+        </StyledDateUl>
+      ));
+    };
+
     return (
       <StyledSection>
-        <StyledUl>
+        <StyledMainUl>
           <StyledTitle>Todo List</StyledTitle>
-          <li>Todo</li>
-          <li>Todo</li>
-          <li>Todo</li>
-        </StyledUl>
+          {createTodosElements()}
+        </StyledMainUl>
         <StyledForm onSubmit={submit}>
           <StyledTitle>Create New Todo</StyledTitle>
           <StyledInput onChange={changeTodoName} type="text" placeholder="Todo Name" />
