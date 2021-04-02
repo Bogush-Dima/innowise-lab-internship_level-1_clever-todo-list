@@ -61,6 +61,7 @@ export const StyledDate = styled.p`
 
 export const StyledTodo = styled.p`
   padding: 10px;
+  margin-bottom: 20px;
   border: 3px solid #00800085;
   border-radius: 10px;
 `;

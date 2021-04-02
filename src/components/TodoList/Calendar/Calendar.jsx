@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireAuth, fireDB } from 'utils/database';
 import {
   StyledDayCard,
   StyledDay,
@@ -31,12 +32,26 @@ export const Calendar = () => {
     allDaysArr.push(obj);
   }
 
+  const clickDate = (event) => {
+    const dateId = +event.currentTarget.id;
+    const dateStr = new Date(dateId).toLocaleDateString();
+    const arr = dateStr.split('/');
+    const newArr = arr.map((num) => (+num < 10 ? `0${num}` : num));
+    const res = `${newArr[2]}-${newArr[0]}-${newArr[1]}`;
+    const todos = [];
+    fireDB
+      .ref(`/${fireAuth.currentUser.email.replace('.', '_')}/${res}`)
+      .on('value', (snapShot) => {
+        snapShot.forEach((obj) => todos.push(obj.val()));
+      });
+  };
+
   return (
     <StyledWrapper>
       <StyledMonth>{todayMonthStr}</StyledMonth>
       <StyledDaysWrapper>
         {allDaysArr.map(({ key, date, day }) => (
-          <StyledDayCard key={key}>
+          <StyledDayCard id={key} onClick={clickDate} key={key}>
             <StyledDay>
               <p>{date}</p>
               <p>{day}</p>

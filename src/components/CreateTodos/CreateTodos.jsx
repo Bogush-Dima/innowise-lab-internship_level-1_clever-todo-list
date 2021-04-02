@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { fireAuth, fireDB } from 'utils/database';
+import { Context } from 'utils/context';
 import {
   StyledSection,
   StyledForm,
@@ -15,14 +15,17 @@ import {
 } from './Styled';
 
 export class CreateTodos extends Component {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
     this.state = { todoName: '', todoDescription: '', date: '', todoList: {} };
   }
 
   componentDidMount() {
-    if (fireAuth.currentUser) {
-      fireDB.ref(`/${fireAuth.currentUser.email.replace('.', '_')}`).on('value', (snapShot) => {
+    const { user, db } = this.context;
+    if (user.currentUser) {
+      db.ref(`/${user.currentUser.email.replace('.', '_')}`).on('value', (snapShot) => {
         const resObj = {};
         snapShot.forEach((childSnapshot) => {
           const { key } = childSnapshot;
@@ -43,9 +46,10 @@ export class CreateTodos extends Component {
 
   render() {
     const { todoName, todoDescription, date, todoList } = this.state;
+    const { user, db } = this.context;
 
     const getTodos = () => {
-      fireDB.ref(`/${fireAuth.currentUser.email.replace('.', '_')}`).on('value', (snapShot) => {
+      db.ref(`/${user.currentUser.email.replace('.', '_')}`).on('value', (snapShot) => {
         const resObj = {};
         snapShot.forEach((childSnapshot) => {
           const { key } = childSnapshot;
@@ -65,7 +69,7 @@ export class CreateTodos extends Component {
 
     const submit = async (event) => {
       event.preventDefault();
-      await fireDB.ref(`/${fireAuth.currentUser.email.replace('.', '_')}/${date}`).push({
+      await db.ref(`/${user.currentUser.email.replace('.', '_')}/${date}`).push({
         date,
         todoName,
         todoDescription,
