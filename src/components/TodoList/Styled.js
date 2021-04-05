@@ -33,15 +33,20 @@ export const StyledTodoList = styled.ul`
 `;
 
 export const StyledTodo = styled.li`
+  width: 100%;
   background: #ffffff57;
   border-radius: 10px;
   margin-bottom: 10px;
-  padding: 5px 10px 5px 30px;
-  position: relative;
+  padding: 5px 10px;
 
   :last-child {
     margin-bottom: 0;
   }
+`;
+
+export const StyledTodoName = styled.p`
+  padding-left: 40px;
+  position: relative;
 
   ::before {
     position: absolute;
@@ -49,9 +54,16 @@ export const StyledTodo = styled.li`
     left: 8px;
     top: 50%;
     transform: translateY(-50%);
-    height: 10px;
-    width: 10px;
+    height: 15px;
+    width: 15px;
     border: 2px solid orange;
     border-radius: 30px;
   }
+`;
+
+export const StyledTodoDesc = styled.p`
+  padding: 10px;
+  margin-top: 4px;
+  background: #a5a5a56b;
+  border-radius: 10px;
 `;
