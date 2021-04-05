@@ -47,13 +47,9 @@ export class Calendar extends Component {
       fireDB
         .ref(`/${fireAuth.currentUser.email.replace('.', '_')}/${res}`)
         .on('value', (snapShot) => {
-          const todos1 = { inProcess: [], done: [] };
+          const todos1 = [];
           snapShot.forEach((obj) => {
-            if (obj.val().done) {
-              todos1.done.push(obj.val());
-            } else {
-              todos1.inProcess.push(obj.val());
-            }
+            todos1.push({ key: obj.key, ...obj.val() });
           });
           dispatch('click', todos1);
         });

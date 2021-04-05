@@ -15,7 +15,14 @@ export class TodoList extends Component {
   static contextType = Context;
 
   render() {
-    const { todos } = this.context;
+    const { todos, user, db } = this.context;
+
+    const clickDone = (event, key, date, done) => {
+      event.preventDefault();
+      db.ref(`/${user.currentUser.email.replace('.', '_')}/${date}`)
+        .child(key)
+        .update({ done: !done });
+    };
 
     return (
       <section>
@@ -24,13 +31,22 @@ export class TodoList extends Component {
           <StyledTodos>
             <StyledTodosTitle>In progress</StyledTodosTitle>
             <StyledTodoList>
-              {todos.inProcess.length ? (
-                todos.inProcess.map(({ todoName, todoDescription }) => (
-                  <StyledTodo>
-                    <StyledTodoName>{todoName}</StyledTodoName>
-                    <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
-                  </StyledTodo>
-                ))
+              {todos.length ? (
+                todos.map(({ todoName, todoDescription, key, done, date }) =>
+                  !done ? (
+                    <StyledTodo key={key}>
+                      <StyledTodoName
+                        onClick={(event) => clickDone(event, key, date, done)}
+                        done="transparent"
+                      >
+                        {todoName}
+                      </StyledTodoName>
+                      <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
+                    </StyledTodo>
+                  ) : (
+                    ''
+                  )
+                )
               ) : (
                 <p>Empty</p>
               )}
@@ -39,13 +55,22 @@ export class TodoList extends Component {
           <StyledTodos>
             <StyledTodosTitle>Done</StyledTodosTitle>
             <StyledTodoList>
-              {todos.done.length ? (
-                todos.done.map(({ todoName, todoDescription }) => (
-                  <StyledTodo>
-                    <StyledTodoName>{todoName}</StyledTodoName>
-                    <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
-                  </StyledTodo>
-                ))
+              {todos.length ? (
+                todos.map(({ todoName, todoDescription, key, done, date }) =>
+                  done ? (
+                    <StyledTodo key={key}>
+                      <StyledTodoName
+                        onClick={(event) => clickDone(event, key, date, done)}
+                        done="orange"
+                      >
+                        {todoName}
+                      </StyledTodoName>
+                      <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
+                    </StyledTodo>
+                  ) : (
+                    ''
+                  )
+                )
               ) : (
                 <p>Empty</p>
               )}

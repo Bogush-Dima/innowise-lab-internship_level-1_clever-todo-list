@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const StyledMainWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   padding: 30px 10px;
 `;
 
@@ -58,6 +59,11 @@ export const StyledTodoName = styled.p`
     width: 15px;
     border: 2px solid orange;
     border-radius: 30px;
+    background: ${(props) => props.done};
+  }
+
+  &:hover::before {
+    cursor: pointer;
   }
 `;
 

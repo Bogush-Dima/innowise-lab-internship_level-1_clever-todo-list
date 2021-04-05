@@ -6,24 +6,18 @@ import { Context } from 'utils/context';
 import { fireAuth, fireDB } from 'utils/database';
 import { App } from 'components/App/App';
 
-// const value = {
-//   user: fireAuth,
-//   db: fireDB,
-//   todos: [],
-// };
-
 class Main extends Component {
   constructor(props) {
     super(props);
     // eslint-disable-next-line react/no-unused-state
-    this.state = { user: fireAuth, db: fireDB, todos: { inProcess: [], done: [] } };
+    this.state = { user: fireAuth, db: fireDB, todos: [] };
   }
 
   dispatch = (action, payload = null) => {
     switch (action) {
       case 'click': {
         // eslint-disable-next-line react/no-unused-state
-        return this.setState({ todos: { ...payload } });
+        return this.setState({ todos: [...payload] });
       }
       default:
         return null;
