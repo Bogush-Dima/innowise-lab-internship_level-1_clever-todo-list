@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Context } from 'utils/context';
 import { fireAuth } from 'utils/database';
 import { StyledWrapper, StyledForm, StyledInput } from './Styled';
 
 export class Enter extends Component {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
     this.state = { email: '', password: '' };
@@ -12,15 +15,12 @@ export class Enter extends Component {
   render() {
     const { method } = this.props;
     const { email, password } = this.state;
+    const { dispatch } = this.context;
 
-    const changeEmail = (event) => {
+    const changeValue = (event) => {
       event.preventDefault();
-      this.setState({ email: event.target.value });
-    };
-
-    const changePassword = (event) => {
-      event.preventDefault();
-      this.setState({ password: event.target.value });
+      const { type } = event.target;
+      this.setState({ [type]: event.target.value });
     };
 
     const submit = (event) => {
@@ -29,6 +29,9 @@ export class Enter extends Component {
       if (method === 'signUp') {
         fireAuth
           .createUserWithEmailAndPassword(email, password)
+          .then(({ user }) => {
+            dispatch('enter', user);
+          })
           .then(() => {
             window.location.pathname = '/todolist';
           })
@@ -37,8 +40,14 @@ export class Enter extends Component {
       } else {
         fireAuth
           .signInWithEmailAndPassword(email, password)
+          .then(({ user }) => {
+            // dispatch('enter')
+            localStorage.setItem('user', JSON.stringify(user));
+          })
           .then(() => {
-            window.location.pathname = '/todolist';
+            window.location.pathname = 'todolist';
+            // history.push('todolist');
+            // dispatch('newPath')
           })
           // eslint-disable-next-line no-console
           .catch((error) => console.log(error.message));
@@ -48,10 +57,10 @@ export class Enter extends Component {
     return (
       <StyledWrapper>
         <StyledForm>
-          <StyledInput type="email" onChange={changeEmail} value={email} placeholder="email" />
+          <StyledInput type="email" onChange={changeValue} value={email} placeholder="email" />
           <StyledInput
             type="password"
-            onChange={changePassword}
+            onChange={changeValue}
             value={password}
             placeholder="password"
           />

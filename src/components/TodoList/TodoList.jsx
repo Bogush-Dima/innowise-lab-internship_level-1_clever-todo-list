@@ -14,12 +14,17 @@ import { Calendar } from './Calendar/Calendar';
 export class TodoList extends Component {
   static contextType = Context;
 
+  componentDidMount() {
+    const { dispatch } = this.context;
+    dispatch('enter', JSON.parse(localStorage.getItem('user')));
+  }
+
   render() {
-    const { todos, user, db } = this.context;
+    const { todos, db, user } = this.context;
 
     const clickDone = (event, key, date, done) => {
       event.preventDefault();
-      db.ref(`/${user.currentUser.email.replace('.', '_')}/${date}`)
+      db.ref(`/${user.email.replace('.', '_')}/${date}`)
         .child(key)
         .update({ done: !done });
     };

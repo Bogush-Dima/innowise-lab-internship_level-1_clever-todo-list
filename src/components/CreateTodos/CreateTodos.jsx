@@ -24,8 +24,8 @@ export class CreateTodos extends Component {
 
   componentDidMount() {
     const { user, db } = this.context;
-    if (user.currentUser) {
-      db.ref(`/${user.currentUser.email.replace('.', '_')}`).on('value', (snapShot) => {
+    if (user) {
+      db.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
         const resObj = {};
         snapShot.forEach((childSnapshot) => {
           const { key } = childSnapshot;
@@ -49,7 +49,7 @@ export class CreateTodos extends Component {
     const { user, db } = this.context;
 
     const getTodos = () => {
-      db.ref(`/${user.currentUser.email.replace('.', '_')}`).on('value', (snapShot) => {
+      db.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
         const resObj = {};
         snapShot.forEach((childSnapshot) => {
           const { key } = childSnapshot;
@@ -69,7 +69,7 @@ export class CreateTodos extends Component {
 
     const submit = async (event) => {
       event.preventDefault();
-      await db.ref(`/${user.currentUser.email.replace('.', '_')}/${date}`).push({
+      await db.ref(`/${user.email.replace('.', '_')}/${date}`).push({
         date,
         todoName,
         todoDescription,

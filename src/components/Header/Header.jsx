@@ -6,8 +6,9 @@ import { StyledHeader } from './Styled';
 export const Header = () => {
   const signOut = (event) => {
     event.preventDefault();
+    localStorage.removeItem('user');
     fireAuth.signOut();
-    window.location.pathname = '/signIn';
+    window.location.pathname = 'signIn';
   };
 
   return (

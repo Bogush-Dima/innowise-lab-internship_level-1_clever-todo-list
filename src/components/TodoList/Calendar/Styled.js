@@ -50,6 +50,7 @@ export const StyledDay = styled.div`
 export const StyledDotsWrapper = styled.div`
   display: flex;
   justify-content: center;
+  min-height: 10px;
 `;
 
 export const StyledInProgressDots = styled.div`

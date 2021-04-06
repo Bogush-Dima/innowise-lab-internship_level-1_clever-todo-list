@@ -3,33 +3,42 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from 'reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Context } from 'utils/context';
-import { fireAuth, fireDB } from 'utils/database';
+import { fireDB } from 'utils/database';
 import { App } from 'components/App/App';
+import { history } from 'utils/history';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    // eslint-disable-next-line react/no-unused-state
-    this.state = { user: fireAuth, db: fireDB, todos: [] };
+    this.state = { user: null, db: fireDB, todos: [], path: history.location.pathname };
   }
 
   dispatch = (action, payload = null) => {
     switch (action) {
       case 'click': {
-        // eslint-disable-next-line react/no-unused-state
-        return this.setState({ todos: [...payload] });
+        this.setState({ todos: [...payload] });
+        break;
+      }
+      case 'enter': {
+        this.setState({ user: payload });
+        break;
+      }
+      case 'newPath': {
+        this.setState({ path: history.location.pathname });
+        break;
       }
       default:
-        return null;
+        break;
     }
   };
 
   render() {
-    const { user, db, todos } = this.state;
+    const { user, db, todos, path } = this.state;
     const value = {
       user,
       db,
       todos,
+      path,
       dispatch: this.dispatch,
     };
 
@@ -43,7 +52,7 @@ class Main extends Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter history={history}>
       <Main />
     </BrowserRouter>
   </React.StrictMode>,
