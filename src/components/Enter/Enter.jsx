@@ -15,7 +15,7 @@ export class Enter extends Component {
   render() {
     const { method } = this.props;
     const { email, password } = this.state;
-    const { dispatch } = this.context;
+    // const { dispatch } = this.context;
 
     const changeValue = (event) => {
       event.preventDefault();
@@ -30,7 +30,8 @@ export class Enter extends Component {
         fireAuth
           .createUserWithEmailAndPassword(email, password)
           .then(({ user }) => {
-            dispatch('enter', user);
+            // dispatch('enter', user);
+            localStorage.setItem('user', JSON.stringify(user));
           })
           .then(() => {
             window.location.pathname = '/todolist';
