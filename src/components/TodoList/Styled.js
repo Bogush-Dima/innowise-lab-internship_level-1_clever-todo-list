@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+export const StyledMainSection = styled.section`
+  min-height: 100vh;
+`;
+
 export const StyledMainWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -48,6 +52,8 @@ export const StyledTodo = styled.li`
 export const StyledTodoName = styled.p`
   padding-left: 40px;
   position: relative;
+  font-weight: 600;
+  color: #5d5d5d;
 
   ::before {
     position: absolute;
@@ -72,4 +78,5 @@ export const StyledTodoDesc = styled.p`
   margin-top: 4px;
   background: #a5a5a56b;
   border-radius: 10px;
+  color: dimgrey;
 `;

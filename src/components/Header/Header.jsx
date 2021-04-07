@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import { fireAuth } from 'utils/database';
-import { StyledHeader } from './Styled';
+import { StyledHeader, StyledSignOutBtn } from './Styled';
 
 export const Header = () => {
   const signOut = (event) => {
@@ -39,9 +39,9 @@ export const Header = () => {
                 <button type="button">Create Todos</button>
               </Link>
               <Link to="signIn">
-                <button onClick={signOut} type="button">
+                <StyledSignOutBtn onClick={signOut} type="button">
                   Sign Out
-                </button>
+                </StyledSignOutBtn>
               </Link>
             </>
           )}
@@ -54,9 +54,9 @@ export const Header = () => {
                 <button type="button">Todo List</button>
               </Link>
               <Link to="signIn">
-                <button onClick={signOut} type="button">
+                <StyledSignOutBtn onClick={signOut} type="button">
                   Sign Out
-                </button>
+                </StyledSignOutBtn>
               </Link>
             </>
           )}

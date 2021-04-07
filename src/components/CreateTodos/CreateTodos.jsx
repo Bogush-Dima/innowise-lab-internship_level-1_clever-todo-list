@@ -14,6 +14,7 @@ import {
   StyledDoneText,
   StyledName,
   StyledDesc,
+  StyledSubmitBtn,
 } from './Styled';
 
 export class CreateTodos extends Component {
@@ -208,7 +209,7 @@ export class CreateTodos extends Component {
             placeholder="Todo Description"
           />
           <StyledInput onChange={changeDate} type="date" value={date || today()} />
-          <input type="submit" value={!update ? 'Save' : formBtnVal} />
+          <StyledSubmitBtn type="submit">{!update ? 'Save' : formBtnVal}</StyledSubmitBtn>
         </StyledForm>
       </StyledSection>
     );
