@@ -10,8 +10,11 @@ import {
   StyledDateUl,
   StyledDate,
   StyledTodo,
+  StyledDoneTodo,
+  StyledDoneText,
   StyledName,
   StyledDesc,
+  StyledSubmitBtn,
 } from './Styled';
 
 export class CreateTodos extends Component {
@@ -19,7 +22,18 @@ export class CreateTodos extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { todoName: '', todoDescription: '', date: '', todoList: {} };
+    this.state = {
+      todoName: '',
+      todoDescription: '',
+      date: '',
+      todoList: {},
+      formBtnVal: 'Update',
+      formTitle: 'Update Todo',
+      todoKey: '',
+      oldDate: '',
+      update: false,
+      keyUpdate: '',
+    };
   }
 
   componentDidMount() {
@@ -45,8 +59,28 @@ export class CreateTodos extends Component {
   }
 
   render() {
-    const { todoName, todoDescription, date, todoList } = this.state;
+    const {
+      todoName,
+      todoDescription,
+      date,
+      todoList,
+      formBtnVal,
+      formTitle,
+      todoKey,
+      oldDate,
+      update,
+      keyUpdate,
+    } = this.state;
+
     const { user, db } = this.context;
+
+    const today = () => {
+      const dateStr = new Date().toLocaleDateString();
+      const arr = dateStr.split('/');
+      const newArr = arr.map((num) => (+num < 10 ? `0${num}` : num));
+      const res = `${newArr[2]}-${newArr[0]}-${newArr[1]}`;
+      return res;
+    };
 
     const getTodos = () => {
       db.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
@@ -69,13 +103,19 @@ export class CreateTodos extends Component {
 
     const submit = async (event) => {
       event.preventDefault();
-      await db.ref(`/${user.email.replace('.', '_')}/${date}`).push({
-        date,
+      if (update) {
+        await db.ref(`/${user.email.replace('.', '_')}/${oldDate}/${todoKey}`).remove();
+        this.setState({ update: false });
+      }
+
+      await db.ref(`/${user.email.replace('.', '_')}/${date || today()}`).push({
+        date: date || today(),
         todoName,
         todoDescription,
         done: false,
       });
       getTodos();
+      this.setState({ todoName: '', todoDescription: '', date: today() });
     };
 
     const changeTodoName = (event) => {
@@ -93,20 +133,58 @@ export class CreateTodos extends Component {
       this.setState({ date: event.target.value });
     };
 
+    // eslint-disable-next-line no-shadow
+    const clickTodo = (event, todoName, todoDescription, date, key) => {
+      event.preventDefault();
+      this.setState({
+        todoName,
+        todoDescription,
+        date,
+        formBtnVal: 'Update',
+        formTitle: 'Update Todo',
+        todoKey: key,
+        oldDate: date,
+        update: true,
+        keyUpdate: key,
+      });
+    };
+
     const createTodosElements = () => {
       const datesArr = Object.keys(todoList);
       return datesArr.map((key) => (
         <StyledDateUl key={key}>
           <StyledDate>{key}</StyledDate>
-          {
-            // eslint-disable-next-line no-shadow
-            todoList[key].map(({ key, todoName, todoDescription }) => (
-              <StyledTodo key={key}>
-                <StyledName>{todoName}</StyledName>
-                <StyledDesc>{todoDescription}</StyledDesc>
-              </StyledTodo>
-            ))
-          }
+          <div>
+            {
+              // eslint-disable-next-line no-shadow
+              todoList[key].map(({ key, todoName, todoDescription, done, date }) =>
+                !done ? (
+                  <StyledTodo
+                    onClick={(event) => clickTodo(event, todoName, todoDescription, date, key)}
+                    key={key}
+                    keyUpdate={keyUpdate === key}
+                  >
+                    <StyledName>{todoName}</StyledName>
+                    <StyledDesc>{todoDescription}</StyledDesc>
+                  </StyledTodo>
+                ) : null
+              )
+            }
+          </div>
+          <div>
+            {
+              // eslint-disable-next-line no-shadow
+              todoList[key].map(({ key, todoName, todoDescription, done }) =>
+                done ? (
+                  <StyledDoneTodo key={key}>
+                    <StyledDoneText>DONE</StyledDoneText>
+                    <StyledName>{todoName}</StyledName>
+                    <StyledDesc>{todoDescription}</StyledDesc>
+                  </StyledDoneTodo>
+                ) : null
+              )
+            }
+          </div>
         </StyledDateUl>
       ));
     };
@@ -118,11 +196,20 @@ export class CreateTodos extends Component {
           {createTodosElements()}
         </StyledMainUl>
         <StyledForm onSubmit={submit}>
-          <StyledTitle>Create New Todo</StyledTitle>
-          <StyledInput onChange={changeTodoName} type="text" placeholder="Todo Name" />
-          <StyledTextarea onChange={changeTodoDescription} placeholder="Todo Description" />
-          <StyledInput onChange={changeDate} type="date" />
-          <input type="submit" value="Save" />
+          <StyledTitle>{!update ? 'Create New Todo' : formTitle}</StyledTitle>
+          <StyledInput
+            onChange={changeTodoName}
+            type="text"
+            value={todoName}
+            placeholder="Todo Name"
+          />
+          <StyledTextarea
+            onChange={changeTodoDescription}
+            value={todoDescription}
+            placeholder="Todo Description"
+          />
+          <StyledInput onChange={changeDate} type="date" value={date || today()} />
+          <StyledSubmitBtn type="submit">{!update ? 'Save' : formBtnVal}</StyledSubmitBtn>
         </StyledForm>
       </StyledSection>
     );

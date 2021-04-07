@@ -41,6 +41,7 @@ export const StyledDay = styled.div`
   height: 110px;
   min-width: 120px;
   padding: 0px 15px;
+  background: ${(props) => (props.isChecked ? 'white' : 'transparent')};
 
   :hover {
     cursor: pointer;

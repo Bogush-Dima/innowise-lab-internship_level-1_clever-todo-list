@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Context } from 'utils/context';
 import {
+  StyledMainSection,
   StyledMainWrapper,
   StyledTodos,
   StyledTodosTitle,
@@ -30,7 +31,7 @@ export class TodoList extends Component {
     };
 
     return (
-      <section>
+      <StyledMainSection>
         <Calendar />
         <StyledMainWrapper>
           <StyledTodos>
@@ -82,7 +83,7 @@ export class TodoList extends Component {
             </StyledTodoList>
           </StyledTodos>
         </StyledMainWrapper>
-      </section>
+      </StyledMainSection>
     );
   }
 }

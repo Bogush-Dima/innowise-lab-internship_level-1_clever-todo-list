@@ -5,3 +5,7 @@ export const StyledHeader = styled.header`
   display: flex;
   justify-content: flex-end;
 `;
+
+export const StyledSignOutBtn = styled.button`
+  margin-left: 10px;
+`;

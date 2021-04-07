@@ -5,11 +5,12 @@ export const StyledSection = styled.section`
   display: flex;
   justify-content: space-between;
   background: #80808040;
+  min-height: calc(100vh - 78px);
 `;
 
 export const StyledMainUl = styled.ul`
   flex-basis: 65%;
-  background: #00800036;
+  background: #ffa50040;
   border-radius: 10px;
   padding: 20px;
 `;
@@ -22,13 +23,14 @@ export const StyledForm = styled.form`
   justify-content: space-between;
   background: #80808040;
   flex-basis: 30%;
-  max-height: 350px;
+  max-height: 460px;
 `;
 
 export const StyledTextarea = styled.textarea`
   min-width: 300px;
   max-width: 300px;
-  min-height: 50px;
+  min-height: 180px;
+  max-height: 180px;
   margin-bottom: 20px;
   padding: 10px;
 `;
@@ -46,7 +48,7 @@ export const StyledInput = styled.input`
 export const StyledDateUl = styled.ul`
   padding: 10px;
   margin-bottom: 20px;
-  background: #ffa50075;
+  background: #ffffff57;
   border-radius: 10px;
 `;
 
@@ -56,32 +58,78 @@ export const StyledDate = styled.p`
   text-align: center;
   font-size: 23px;
   font-weight: 600;
-  border-bottom: 3px solid #00800e3d;
 `;
 
 export const StyledTodo = styled.p`
   padding: 10px;
   margin-bottom: 20px;
-  border: 3px solid #00800085;
+  border: 3px solid orange;
   border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+
+  ::before {
+    position: absolute;
+    content: 'Updating...';
+    width: 100%;
+    height: 100%;
+    background: #00000061;
+    top: 0;
+    left: 0;
+    display: ${(props) => (props.keyUpdate ? 'flex' : 'none')};
+    justify-content: flex-end;
+    font-size: 25px;
+    font-weight: 600;
+    color: #ffa500de;
+    box-sizing: border-box;
+    padding-right: 10px;
+  }
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
-export const StyledName = styled.p`
+export const StyledDoneTodo = styled.p`
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 3px solid #777777b0;
+  border-radius: 10px;
   position: relative;
-  padding-left: 20px;
-  font-size: 20px;
+  overflow: hidden;
 
   ::before {
     position: absolute;
     content: '';
+    height: 100%;
+    width: 100%;
+    top: 0;
     left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 7px;
-    width: 7px;
-    border: 3px solid black;
-    border-radius: 50px;
+    background: #ffffff85;
   }
+`;
+
+export const StyledDoneText = styled.p`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateZ(-6deg);
+  padding: 10px 20px;
+  padding-right: 15px;
+  border: 3px solid #777777b0;
+  border-radius: 10px;
+  letter-spacing: 5px;
+  font-size: 20px;
+  color: #777777b0;
+  font-weight: 600;
+`;
+
+export const StyledName = styled.p`
+  padding-left: 10px;
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #292929;
 `;
 
 export const StyledDesc = styled.p`
@@ -90,4 +138,11 @@ export const StyledDesc = styled.p`
   font-size: 17px;
   background: #ffffff91;
   border-radius: 10px;
+`;
+
+export const StyledSubmitBtn = styled.button`
+  color: #464646;
+  max-width: 40%;
+  margin: 0 auto;
+  background: #ffffff45;
 `;

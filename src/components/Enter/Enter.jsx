@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Context } from 'utils/context';
 import { fireAuth } from 'utils/database';
-import { StyledWrapper, StyledForm, StyledInput } from './Styled';
+import { StyledWrapper, StyledForm, StyledInput, StyledBtn } from './Styled';
 
 export class Enter extends Component {
   static contextType = Context;
@@ -15,7 +15,7 @@ export class Enter extends Component {
   render() {
     const { method } = this.props;
     const { email, password } = this.state;
-    const { dispatch } = this.context;
+    // const { dispatch } = this.context;
 
     const changeValue = (event) => {
       event.preventDefault();
@@ -30,7 +30,8 @@ export class Enter extends Component {
         fireAuth
           .createUserWithEmailAndPassword(email, password)
           .then(({ user }) => {
-            dispatch('enter', user);
+            // dispatch('enter', user);
+            localStorage.setItem('user', JSON.stringify(user));
           })
           .then(() => {
             window.location.pathname = '/todolist';
@@ -64,9 +65,9 @@ export class Enter extends Component {
             value={password}
             placeholder="password"
           />
-          <button onClick={submit} type="submit">
+          <StyledBtn onClick={submit} type="submit">
             {method === 'signUp' ? 'Sign Up' : 'Sign In'}
-          </button>
+          </StyledBtn>
         </StyledForm>
       </StyledWrapper>
     );
