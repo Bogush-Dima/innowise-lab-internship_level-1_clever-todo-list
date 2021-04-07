@@ -15,8 +15,14 @@ import {
 export class Calendar extends Component {
   static contextType = Context;
 
+  constructor(props) {
+    super(props);
+    this.state = { isChecked: localStorage.getItem('isChecked') || '' };
+  }
+
   render() {
     const { dispatch, user } = this.context;
+    const { isChecked } = this.state;
     const today = new Date();
     const todayYear = today.getFullYear();
     const todayMonthStr = today.toLocaleDateString('en-us', { month: 'long' });
@@ -61,7 +67,9 @@ export class Calendar extends Component {
       });
     }
 
-    const clickDate = (event) => {
+    const clickDate = (event, key) => {
+      localStorage.setItem('isChecked', JSON.stringify(key));
+      this.setState({ isChecked: JSON.stringify(key) });
       const dateId = +event.currentTarget.id;
       const dateStr = new Date(dateId).toLocaleDateString();
       const arr = dateStr.split('/');
@@ -86,8 +94,8 @@ export class Calendar extends Component {
         <StyledMonth>{todayMonthStr}</StyledMonth>
         <StyledDaysWrapper>
           {allDaysArr.map(({ key, date, day, dateStr }) => (
-            <StyledDayCard id={key} onClick={clickDate} key={key}>
-              <StyledDay>
+            <StyledDayCard id={key} onClick={(event) => clickDate(event, key)} key={key}>
+              <StyledDay isChecked={isChecked === JSON.stringify(key)}>
                 <p>{date}</p>
                 <p>{day}</p>
               </StyledDay>

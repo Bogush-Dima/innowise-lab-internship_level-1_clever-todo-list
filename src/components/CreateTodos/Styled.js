@@ -64,24 +64,67 @@ export const StyledTodo = styled.p`
   margin-bottom: 20px;
   border: 3px solid #00800085;
   border-radius: 10px;
+  position: relative;
+
+  ::before {
+    position: absolute;
+    content: 'Updating...';
+    width: 100%;
+    height: 100%;
+    background: #ec570052;
+    top: 0;
+    left: 0;
+    display: ${(props) => (props.keyUpdate ? 'flex' : 'none')};
+    justify-content: flex-end;
+    font-size: 25px;
+    font-weight: 600;
+    color: #00000094;
+    box-sizing: border-box;
+    padding-right: 10px;
+  }
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
-export const StyledName = styled.p`
+export const StyledDoneTodo = styled.p`
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 3px solid #777777b0;
+  border-radius: 10px;
   position: relative;
-  padding-left: 20px;
-  font-size: 20px;
+  overflow: hidden;
 
   ::before {
     position: absolute;
     content: '';
+    height: 100%;
+    width: 100%;
+    top: 0;
     left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 7px;
-    width: 7px;
-    border: 3px solid black;
-    border-radius: 50px;
+    background: #ffffff85;
   }
+`;
+
+export const StyledDoneText = styled.p`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateZ(-6deg);
+  padding: 10px 20px;
+  padding-right: 15px;
+  border: 3px solid #777777b0;
+  border-radius: 10px;
+  letter-spacing: 5px;
+  font-size: 20px;
+  color: #777777b0;
+  font-weight: 600;
+`;
+
+export const StyledName = styled.p`
+  padding-left: 10px;
+  font-size: 20px;
 `;
 
 export const StyledDesc = styled.p`

@@ -7,6 +7,7 @@ export const Header = () => {
   const signOut = (event) => {
     event.preventDefault();
     localStorage.removeItem('user');
+    localStorage.removeItem('isChecked');
     fireAuth.signOut();
     window.location.pathname = 'signIn';
   };
