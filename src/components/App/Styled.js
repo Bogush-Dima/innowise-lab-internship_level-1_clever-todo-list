@@ -9,7 +9,7 @@ export const StyledGlobal = createGlobalStyle`
     list-style: none;
   }
 
-  button {
+  button, a {
     font-size: 17px;
     font-weight: 600;
     padding: 7px 10px;
@@ -20,12 +20,20 @@ export const StyledGlobal = createGlobalStyle`
     color: #5d5d5d;
     transition: all .2s ease-in-out;
     outline: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     :hover {
       cursor: pointer;
       background: orange;
       color: white
     }
+  }
+
+  a:last-child {
+    margin-left: 10px
   }
 
   input, textarea {

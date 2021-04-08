@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { fireDB } from 'utils/database';
 import { Context } from 'utils/context';
+import { GET_DB } from 'utils/constants';
 import {
   StyledMainSection,
   StyledMainWrapper,
@@ -12,12 +14,31 @@ import {
 } from './Styled';
 import { Calendar } from './Calendar/Calendar';
 
+// eslint-disable-next-line react/prefer-stateless-function
 export class TodoList extends Component {
-  static contextType = Context;
-
   componentDidMount() {
-    const { dispatch } = this.context;
-    dispatch('enter', JSON.parse(localStorage.getItem('user')));
+    const { user, dispatch } = this.context;
+
+    const addKeyToTodoObj = (obj) => {
+      const keys = Object.keys(obj);
+      const res = keys.map((key) => {
+        // eslint-disable-next-line no-param-reassign
+        obj[key].key = key;
+        return obj[key];
+      });
+      return res;
+    };
+
+    fireDB.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
+      let result = {};
+      snapShot.forEach((el) => {
+        const { key } = el;
+        const value = el.val();
+        result = { ...result, [key]: addKeyToTodoObj(value) };
+      });
+
+      dispatch(GET_DB, result);
+    });
   }
 
   render() {
@@ -87,3 +108,5 @@ export class TodoList extends Component {
     );
   }
 }
+
+TodoList.contextType = Context;

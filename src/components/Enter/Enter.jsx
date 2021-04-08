@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ENTER_USER } from 'utils/constants';
 import { Context } from 'utils/context';
 import { fireAuth } from 'utils/database';
 import { StyledWrapper, StyledForm, StyledInput, StyledBtn } from './Styled';
 
 export class Enter extends Component {
-  static contextType = Context;
+  // static contextType = Context;
 
   constructor(props) {
     super(props);
@@ -13,9 +13,9 @@ export class Enter extends Component {
   }
 
   render() {
-    const { method } = this.props;
+    const { method, history } = this.props;
     const { email, password } = this.state;
-    // const { dispatch } = this.context;
+    const { dispatch } = this.context;
 
     const changeValue = (event) => {
       event.preventDefault();
@@ -29,26 +29,22 @@ export class Enter extends Component {
       if (method === 'signUp') {
         fireAuth
           .createUserWithEmailAndPassword(email, password)
+          // eslint-disable-next-line no-shadow
           .then(({ user }) => {
-            // dispatch('enter', user);
-            localStorage.setItem('user', JSON.stringify(user));
+            dispatch(ENTER_USER, user);
           })
-          .then(() => {
-            window.location.pathname = '/todolist';
-          })
+          .then(() => history.push('todolist'))
           // eslint-disable-next-line no-console
           .catch((error) => console.log(error.message));
       } else {
         fireAuth
           .signInWithEmailAndPassword(email, password)
+          // eslint-disable-next-line no-shadow
           .then(({ user }) => {
-            // dispatch('enter')
-            localStorage.setItem('user', JSON.stringify(user));
+            dispatch(ENTER_USER, user);
           })
           .then(() => {
-            window.location.pathname = 'todolist';
-            // history.push('todolist');
-            // dispatch('newPath')
+            history.push('todolist');
           })
           // eslint-disable-next-line no-console
           .catch((error) => console.log(error.message));
@@ -74,6 +70,4 @@ export class Enter extends Component {
   }
 }
 
-Enter.propTypes = {
-  method: PropTypes.string.isRequired,
-};
+Enter.contextType = Context;

@@ -26,7 +26,6 @@ export class CreateTodos extends Component {
       todoName: '',
       todoDescription: '',
       date: '',
-      todoList: {},
       formBtnVal: 'Update',
       formTitle: 'Update Todo',
       todoKey: '',
@@ -36,34 +35,11 @@ export class CreateTodos extends Component {
     };
   }
 
-  componentDidMount() {
-    const { user, db } = this.context;
-    if (user) {
-      db.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
-        const resObj = {};
-        snapShot.forEach((childSnapshot) => {
-          const { key } = childSnapshot;
-          const objects = childSnapshot.val();
-          const entr = Object.entries(objects);
-          const objArr = entr.map((arr) => {
-            const key1 = arr[0];
-            const obj = arr[1];
-            const res = { key: key1, ...obj };
-            return res;
-          });
-          resObj[key] = objArr;
-        });
-        this.setState({ todoList: resObj });
-      });
-    }
-  }
-
   render() {
     const {
       todoName,
       todoDescription,
       date,
-      todoList,
       formBtnVal,
       formTitle,
       todoKey,
@@ -97,7 +73,6 @@ export class CreateTodos extends Component {
           });
           resObj[key] = objArr;
         });
-        this.setState({ todoList: resObj });
       });
     };
 
@@ -150,14 +125,14 @@ export class CreateTodos extends Component {
     };
 
     const createTodosElements = () => {
-      const datesArr = Object.keys(todoList);
+      const datesArr = Object.keys(db);
       return datesArr.map((key) => (
         <StyledDateUl key={key}>
           <StyledDate>{key}</StyledDate>
           <div>
             {
               // eslint-disable-next-line no-shadow
-              todoList[key].map(({ key, todoName, todoDescription, done, date }) =>
+              db[key].map(({ key, todoName, todoDescription, done, date }) =>
                 !done ? (
                   <StyledTodo
                     onClick={(event) => clickTodo(event, todoName, todoDescription, date, key)}
@@ -174,7 +149,7 @@ export class CreateTodos extends Component {
           <div>
             {
               // eslint-disable-next-line no-shadow
-              todoList[key].map(({ key, todoName, todoDescription, done }) =>
+              db[key].map(({ key, todoName, todoDescription, done }) =>
                 done ? (
                   <StyledDoneTodo key={key}>
                     <StyledDoneText>DONE</StyledDoneText>

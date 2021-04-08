@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from 'reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Context } from 'utils/context';
-import { fireDB } from 'utils/database';
 import { App } from 'components/App/App';
-import { history } from 'utils/history';
+import { ENTER_USER, GET_DB } from 'utils/constants';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, db: fireDB, todos: [], path: history.location.pathname };
+    this.state = { user: null, db: null, todos: [] };
   }
 
   dispatch = (action, payload = null) => {
@@ -19,12 +18,12 @@ class Main extends Component {
         this.setState({ todos: [...payload] });
         break;
       }
-      case 'enter': {
-        this.setState({ user: payload });
+      case ENTER_USER: {
+        this.setState({ user: { ...payload } });
         break;
       }
-      case 'newPath': {
-        this.setState({ path: history.location.pathname });
+      case GET_DB: {
+        this.setState({ db: payload });
         break;
       }
       default:
@@ -33,12 +32,11 @@ class Main extends Component {
   };
 
   render() {
-    const { user, db, todos, path } = this.state;
+    const { user, db, todos } = this.state;
     const value = {
       user,
       db,
       todos,
-      path,
       dispatch: this.dispatch,
     };
 
@@ -52,7 +50,7 @@ class Main extends Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter history={history}>
+    <BrowserRouter>
       <Main />
     </BrowserRouter>
   </React.StrictMode>,
