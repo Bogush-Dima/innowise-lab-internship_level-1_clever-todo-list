@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledMainSection = styled.section`
-  min-height: 100vh;
+  min-height: calc(100vh - 78px);
 `;
 
 export const StyledMainWrapper = styled.div`

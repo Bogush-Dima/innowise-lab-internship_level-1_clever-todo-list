@@ -42,11 +42,12 @@ export class TodoList extends Component {
   }
 
   render() {
-    const { todos, db, user } = this.context;
+    const { todos, user } = this.context;
 
     const clickDone = (event, key, date, done) => {
       event.preventDefault();
-      db.ref(`/${user.email.replace('.', '_')}/${date}`)
+      fireDB
+        .ref(`/${user.email.replace('.', '_')}/${date}`)
         .child(key)
         .update({ done: !done });
     };

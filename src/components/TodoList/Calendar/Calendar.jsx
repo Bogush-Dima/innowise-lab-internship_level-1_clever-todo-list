@@ -68,7 +68,6 @@ export class Calendar extends Component {
     }
 
     const clickDate = (event, key) => {
-      localStorage.setItem('isChecked', JSON.stringify(key));
       this.setState({ isChecked: JSON.stringify(key) });
       const dateId = +event.currentTarget.id;
       const dateStr = new Date(dateId).toLocaleDateString();

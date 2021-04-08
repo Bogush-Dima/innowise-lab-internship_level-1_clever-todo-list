@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Context } from 'utils/context';
+import { fireDB } from 'utils/database';
 import {
   StyledSection,
   StyledForm,
@@ -58,38 +59,19 @@ export class CreateTodos extends Component {
       return res;
     };
 
-    const getTodos = () => {
-      db.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
-        const resObj = {};
-        snapShot.forEach((childSnapshot) => {
-          const { key } = childSnapshot;
-          const objects = childSnapshot.val();
-          const entr = Object.entries(objects);
-          const objArr = entr.map((arr) => {
-            const key1 = arr[0];
-            const obj = arr[1];
-            const res = { key: key1, ...obj };
-            return res;
-          });
-          resObj[key] = objArr;
-        });
-      });
-    };
-
     const submit = async (event) => {
       event.preventDefault();
       if (update) {
-        await db.ref(`/${user.email.replace('.', '_')}/${oldDate}/${todoKey}`).remove();
+        await fireDB.ref(`/${user.email.replace('.', '_')}/${oldDate}/${todoKey}`).remove();
         this.setState({ update: false });
       }
 
-      await db.ref(`/${user.email.replace('.', '_')}/${date || today()}`).push({
+      await fireDB.ref(`/${user.email.replace('.', '_')}/${date || today()}`).push({
         date: date || today(),
         todoName,
         todoDescription,
         done: false,
       });
-      getTodos();
       this.setState({ todoName: '', todoDescription: '', date: today() });
     };
 
