@@ -6,6 +6,10 @@ export const StyledSection = styled.section`
   justify-content: space-between;
   background: #80808040;
   min-height: calc(100vh - 78px);
+
+  @media (max-width: 900px) {
+    display: block;
+  }
 `;
 
 export const StyledMainUl = styled.ul`
@@ -13,6 +17,28 @@ export const StyledMainUl = styled.ul`
   background: #ffa50040;
   border-radius: 10px;
   padding: 20px;
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+`;
+
+export const StyledFormWrapper = styled.div`
+  margin-left: 15px;
+  max-width: max-content;
+
+  @media (max-width: 900px) {
+    display: ${(props) => (props.createTodo ? 'block' : 'none')};
+    position: fixed;
+    max-width: 5000px;
+    margin-left: 0;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: #000000d4;
+    z-index: 5;
+  }
 `;
 
 export const StyledForm = styled.form`
@@ -24,6 +50,14 @@ export const StyledForm = styled.form`
   background: #80808040;
   flex-basis: 30%;
   max-height: 460px;
+
+  @media (max-width: 900px) {
+    background: #808080;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 export const StyledTextarea = styled.textarea`

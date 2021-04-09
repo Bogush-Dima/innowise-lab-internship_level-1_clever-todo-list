@@ -9,6 +9,12 @@ export const StyledMainWrapper = styled.div`
   justify-content: space-between;
   align-items: baseline;
   padding: 30px 10px;
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 `;
 
 export const StyledTodos = styled.div`
@@ -17,6 +23,14 @@ export const StyledTodos = styled.div`
   flex-basis: 50%;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 500px) {
+    width: 100%;
+
+    :first-child {
+      margin-bottom: 40px;
+    }
+  }
 `;
 
 export const StyledTodosTitle = styled.h2`

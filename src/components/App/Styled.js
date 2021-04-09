@@ -30,10 +30,20 @@ export const StyledGlobal = createGlobalStyle`
       background: orange;
       color: white
     }
+
+    @media(max-width: 460px) {
+      font-size: 15px;
+      padding: 5px 5px;
+      min-width: 90px;
+    }
   }
 
-  a:last-child {
-    margin-left: 10px
+  a {
+    margin-right: 10px;
+
+    :last-child {
+      margin-right: 0;
+    }
   }
 
   input, textarea {
@@ -47,6 +57,7 @@ export const StyledGlobal = createGlobalStyle`
 
 export const StyledApp = styled.div`
   max-width: 1200px;
+  min-height: 100%;
   background: #8080804f;
   margin: 0 auto;
 `;

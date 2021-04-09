@@ -4,12 +4,12 @@ import reportWebVitals from 'reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Context } from 'utils/context';
 import { App } from 'components/App/App';
-import { CLICK_DAY, ENTER_USER, GET_DB, RESET_DATA } from 'utils/constants';
+import { CLICK_DAY, ENTER_USER, GET_DB, RESET_DATA, TOGGLE_CREATE_TODO } from 'utils/constants';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, db: null, todos: [], checkedDay: '' };
+    this.state = { user: null, db: null, todos: [], checkedDay: '', createTodo: false };
   }
 
   dispatch = (action, payload = null) => {
@@ -31,18 +31,23 @@ class Main extends Component {
         this.setState({ user: payload, db: payload, todos: [], checkedDay: '' });
         break;
       }
+      case TOGGLE_CREATE_TODO: {
+        this.setState({ createTodo: payload });
+        break;
+      }
       default:
         break;
     }
   };
 
   render() {
-    const { user, db, todos, checkedDay } = this.state;
+    const { user, db, todos, checkedDay, createTodo } = this.state;
     const value = {
       user,
       db,
       todos,
       checkedDay,
+      createTodo,
       dispatch: this.dispatch,
     };
 

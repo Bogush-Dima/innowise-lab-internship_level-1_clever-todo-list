@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { TOGGLE_CREATE_TODO } from 'utils/constants';
 import { Context } from 'utils/context';
 import { fireDB } from 'utils/database';
 import {
   StyledSection,
+  StyledFormWrapper,
   StyledForm,
   StyledTextarea,
   StyledTitle,
@@ -49,7 +51,7 @@ export class CreateTodos extends Component {
       keyUpdate,
     } = this.state;
 
-    const { user, db } = this.context;
+    const { user, db, createTodo, dispatch } = this.context;
 
     const today = () => {
       const dateStr = new Date().toLocaleDateString();
@@ -73,6 +75,7 @@ export class CreateTodos extends Component {
         done: false,
       });
       this.setState({ todoName: '', todoDescription: '', date: today() });
+      dispatch(TOGGLE_CREATE_TODO, false);
     };
 
     const changeTodoName = (event) => {
@@ -104,6 +107,7 @@ export class CreateTodos extends Component {
         update: true,
         keyUpdate: key,
       });
+      dispatch(TOGGLE_CREATE_TODO, true);
     };
 
     const createTodosElements = () => {
@@ -146,28 +150,44 @@ export class CreateTodos extends Component {
       ));
     };
 
+    const clickFormOutside = (event) => {
+      const { tagName } = event.target;
+      if (tagName === 'DIV') {
+        this.setState({
+          update: false,
+          keyUpdate: '',
+          todoName: '',
+          todoDescription: '',
+          date: '',
+        });
+        dispatch(TOGGLE_CREATE_TODO, false);
+      }
+    };
+
     return (
       <StyledSection>
         <StyledMainUl>
           <StyledTitle>Todo List</StyledTitle>
           {createTodosElements()}
         </StyledMainUl>
-        <StyledForm onSubmit={submit}>
-          <StyledTitle>{!update ? 'Create New Todo' : formTitle}</StyledTitle>
-          <StyledInput
-            onChange={changeTodoName}
-            type="text"
-            value={todoName}
-            placeholder="Todo Name"
-          />
-          <StyledTextarea
-            onChange={changeTodoDescription}
-            value={todoDescription}
-            placeholder="Todo Description"
-          />
-          <StyledInput onChange={changeDate} type="date" value={date || today()} />
-          <StyledSubmitBtn type="submit">{!update ? 'Save' : formBtnVal}</StyledSubmitBtn>
-        </StyledForm>
+        <StyledFormWrapper onMouseDown={clickFormOutside} createTodo={createTodo}>
+          <StyledForm onSubmit={submit}>
+            <StyledTitle>{!update ? 'Create New Todo' : formTitle}</StyledTitle>
+            <StyledInput
+              onChange={changeTodoName}
+              type="text"
+              value={todoName}
+              placeholder="Todo Name"
+            />
+            <StyledTextarea
+              onChange={changeTodoDescription}
+              value={todoDescription}
+              placeholder="Todo Description"
+            />
+            <StyledInput onChange={changeDate} type="date" value={date || today()} />
+            <StyledSubmitBtn type="submit">{!update ? 'Save' : formBtnVal}</StyledSubmitBtn>
+          </StyledForm>
+        </StyledFormWrapper>
       </StyledSection>
     );
   }
