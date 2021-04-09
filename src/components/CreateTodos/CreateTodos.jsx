@@ -9,6 +9,7 @@ import {
   StyledTextarea,
   StyledTitle,
   StyledInput,
+  StyledInputWrapper,
   StyledMainUl,
   StyledDateUl,
   StyledDate,
@@ -35,6 +36,7 @@ export class CreateTodos extends Component {
       oldDate: '',
       update: false,
       keyUpdate: '',
+      nameError: false,
     };
   }
 
@@ -49,6 +51,7 @@ export class CreateTodos extends Component {
       oldDate,
       update,
       keyUpdate,
+      nameError,
     } = this.state;
 
     const { user, db, createTodo, dispatch } = this.context;
@@ -68,6 +71,11 @@ export class CreateTodos extends Component {
         this.setState({ update: false });
       }
 
+      if (!todoName.trim()) {
+        this.setState({ nameError: true });
+        return;
+      }
+
       await fireDB.ref(`/${user.email.replace('.', '_')}/${date || today()}`).push({
         date: date || today(),
         todoName,
@@ -80,7 +88,7 @@ export class CreateTodos extends Component {
 
     const changeTodoName = (event) => {
       event.preventDefault();
-      this.setState({ todoName: event.target.value });
+      this.setState({ todoName: event.target.value, nameError: false });
     };
 
     const changeTodoDescription = (event) => {
@@ -173,12 +181,14 @@ export class CreateTodos extends Component {
         <StyledFormWrapper onMouseDown={clickFormOutside} createTodo={createTodo}>
           <StyledForm onSubmit={submit}>
             <StyledTitle>{!update ? 'Create New Todo' : formTitle}</StyledTitle>
-            <StyledInput
-              onChange={changeTodoName}
-              type="text"
-              value={todoName}
-              placeholder="Todo Name"
-            />
+            <StyledInputWrapper nameError={nameError}>
+              <StyledInput
+                onChange={changeTodoName}
+                type="text"
+                value={todoName}
+                placeholder="Todo Name"
+              />
+            </StyledInputWrapper>
             <StyledTextarea
               onChange={changeTodoDescription}
               value={todoDescription}

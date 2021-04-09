@@ -75,8 +75,29 @@ export const StyledTitle = styled.h2`
 `;
 
 export const StyledInput = styled.input`
+  width: 100%;
   padding: 10px;
+`;
+
+export const StyledInputWrapper = styled.div`
+  position: relative;
   margin-bottom: 20px;
+
+  ::before {
+    display: ${(props) => (props.nameError ? 'flex' : 'none')};
+    position: absolute;
+    content: 'Empty todo name';
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: #790000eb;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 15px;
+  }
 `;
 
 export const StyledDateUl = styled.ul`
@@ -178,5 +199,6 @@ export const StyledSubmitBtn = styled.button`
   color: #464646;
   max-width: 40%;
   margin: 0 auto;
+  margin-top: 20px;
   background: #ffffff45;
 `;

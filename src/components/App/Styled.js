@@ -57,7 +57,7 @@ export const StyledGlobal = createGlobalStyle`
 
 export const StyledApp = styled.div`
   max-width: 1200px;
-  min-height: 100%;
+  min-height: 100vh;
   background: #8080804f;
   margin: 0 auto;
 `;

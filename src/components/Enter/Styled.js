@@ -22,9 +22,31 @@ export const StyledForm = styled.form`
   border-radius: 10px;
 `;
 
+export const StyledInputWrapper = styled.div`
+  position: relative;
+  margin-bottom: 20px;
+
+  ::before {
+    display: ${(props) => (props.message ? 'flex' : 'none')};
+    position: absolute;
+    content: '${(props) => props.message}';
+    padding: 10px;
+    box-sizing: border-box;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #790000eb;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 15px;
+    z-index: 1;
+  }
+`;
+
 export const StyledInput = styled.input`
   padding: 10px;
-  margin-bottom: 20px;
 `;
 
 export const StyledBtn = styled.button`
