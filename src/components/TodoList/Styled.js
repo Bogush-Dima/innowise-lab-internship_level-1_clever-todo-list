@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledMainSection = styled.section`
-  min-height: 100vh;
+  min-height: calc(100vh - 78px);
 `;
 
 export const StyledMainWrapper = styled.div`
@@ -9,6 +9,12 @@ export const StyledMainWrapper = styled.div`
   justify-content: space-between;
   align-items: baseline;
   padding: 30px 10px;
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 `;
 
 export const StyledTodos = styled.div`
@@ -17,6 +23,14 @@ export const StyledTodos = styled.div`
   flex-basis: 50%;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 500px) {
+    width: 100%;
+
+    :first-child {
+      margin-bottom: 40px;
+    }
+  }
 `;
 
 export const StyledTodosTitle = styled.h2`

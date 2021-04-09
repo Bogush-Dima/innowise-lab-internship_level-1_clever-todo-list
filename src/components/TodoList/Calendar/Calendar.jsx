@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CLICK_DAY } from 'utils/constants';
 import { Context } from 'utils/context';
 import { fireAuth, fireDB } from 'utils/database';
 import {
@@ -15,14 +16,12 @@ import {
 export class Calendar extends Component {
   static contextType = Context;
 
-  constructor(props) {
-    super(props);
-    this.state = { isChecked: localStorage.getItem('isChecked') || '' };
+  componentDidUpdate() {
+    return null;
   }
 
   render() {
-    const { dispatch, user } = this.context;
-    const { isChecked } = this.state;
+    const { dispatch, user, checkedDay } = this.context;
     const today = new Date();
     const todayYear = today.getFullYear();
     const todayMonthStr = today.toLocaleDateString('en-us', { month: 'long' });
@@ -68,8 +67,6 @@ export class Calendar extends Component {
     }
 
     const clickDate = (event, key) => {
-      localStorage.setItem('isChecked', JSON.stringify(key));
-      this.setState({ isChecked: JSON.stringify(key) });
       const dateId = +event.currentTarget.id;
       const dateStr = new Date(dateId).toLocaleDateString();
       const arr = dateStr.split('/');
@@ -79,11 +76,12 @@ export class Calendar extends Component {
       fireDB
         .ref(`/${fireAuth.currentUser.email.replace('.', '_')}/${res}`)
         .on('value', (snapShot) => {
-          const todos1 = [];
+          // eslint-disable-next-line no-shadow
+          const todos = [];
           snapShot.forEach((obj) => {
-            todos1.push({ key: obj.key, ...obj.val() });
+            todos.push({ key: obj.key, ...obj.val() });
           });
-          dispatch('click', todos1);
+          dispatch(CLICK_DAY, { todos, key });
         });
     };
 
@@ -95,7 +93,7 @@ export class Calendar extends Component {
         <StyledDaysWrapper>
           {allDaysArr.map(({ key, date, day, dateStr }) => (
             <StyledDayCard id={key} onClick={(event) => clickDate(event, key)} key={key}>
-              <StyledDay isChecked={isChecked === JSON.stringify(key)}>
+              <StyledDay isChecked={checkedDay === key}>
                 <p>{date}</p>
                 <p>{day}</p>
               </StyledDay>

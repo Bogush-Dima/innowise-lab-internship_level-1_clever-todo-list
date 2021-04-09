@@ -3,28 +3,36 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from 'reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Context } from 'utils/context';
-import { fireDB } from 'utils/database';
 import { App } from 'components/App/App';
-import { history } from 'utils/history';
+import { CLICK_DAY, ENTER_USER, GET_DB, RESET_DATA, TOGGLE_CREATE_TODO } from 'utils/constants';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, db: fireDB, todos: [], path: history.location.pathname };
+    this.state = { user: null, db: null, todos: [], checkedDay: '', createTodo: false };
   }
 
   dispatch = (action, payload = null) => {
     switch (action) {
-      case 'click': {
-        this.setState({ todos: [...payload] });
+      case CLICK_DAY: {
+        const { todos, key } = payload;
+        this.setState({ todos: [...todos], checkedDay: key });
         break;
       }
-      case 'enter': {
-        this.setState({ user: payload });
+      case ENTER_USER: {
+        this.setState({ user: { ...payload } });
         break;
       }
-      case 'newPath': {
-        this.setState({ path: history.location.pathname });
+      case GET_DB: {
+        this.setState({ db: payload });
+        break;
+      }
+      case RESET_DATA: {
+        this.setState({ user: payload, db: payload, todos: [], checkedDay: '' });
+        break;
+      }
+      case TOGGLE_CREATE_TODO: {
+        this.setState({ createTodo: payload });
         break;
       }
       default:
@@ -33,12 +41,13 @@ class Main extends Component {
   };
 
   render() {
-    const { user, db, todos, path } = this.state;
+    const { user, db, todos, checkedDay, createTodo } = this.state;
     const value = {
       user,
       db,
       todos,
-      path,
+      checkedDay,
+      createTodo,
       dispatch: this.dispatch,
     };
 
@@ -52,7 +61,7 @@ class Main extends Component {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter history={history}>
+    <BrowserRouter>
       <Main />
     </BrowserRouter>
   </React.StrictMode>,

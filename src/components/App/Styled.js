@@ -9,7 +9,7 @@ export const StyledGlobal = createGlobalStyle`
     list-style: none;
   }
 
-  button {
+  button, a {
     font-size: 17px;
     font-weight: 600;
     padding: 7px 10px;
@@ -20,11 +20,29 @@ export const StyledGlobal = createGlobalStyle`
     color: #5d5d5d;
     transition: all .2s ease-in-out;
     outline: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     :hover {
       cursor: pointer;
       background: orange;
       color: white
+    }
+
+    @media(max-width: 460px) {
+      font-size: 15px;
+      padding: 5px 5px;
+      min-width: 90px;
+    }
+  }
+
+  a {
+    margin-right: 10px;
+
+    :last-child {
+      margin-right: 0;
     }
   }
 
@@ -39,6 +57,7 @@ export const StyledGlobal = createGlobalStyle`
 
 export const StyledApp = styled.div`
   max-width: 1200px;
+  min-height: 100vh;
   background: #8080804f;
   margin: 0 auto;
 `;
