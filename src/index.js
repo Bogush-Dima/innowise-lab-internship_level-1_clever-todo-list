@@ -4,18 +4,19 @@ import reportWebVitals from 'reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Context } from 'utils/context';
 import { App } from 'components/App/App';
-import { ENTER_USER, GET_DB } from 'utils/constants';
+import { CLICK_DAY, ENTER_USER, GET_DB, RESET_DATA } from 'utils/constants';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, db: null, todos: [] };
+    this.state = { user: null, db: null, todos: [], checkedDay: '' };
   }
 
   dispatch = (action, payload = null) => {
     switch (action) {
-      case 'click': {
-        this.setState({ todos: [...payload] });
+      case CLICK_DAY: {
+        const { todos, key } = payload;
+        this.setState({ todos: [...todos], checkedDay: key });
         break;
       }
       case ENTER_USER: {
@@ -26,17 +27,22 @@ class Main extends Component {
         this.setState({ db: payload });
         break;
       }
+      case RESET_DATA: {
+        this.setState({ user: payload, db: payload, todos: [], checkedDay: '' });
+        break;
+      }
       default:
         break;
     }
   };
 
   render() {
-    const { user, db, todos } = this.state;
+    const { user, db, todos, checkedDay } = this.state;
     const value = {
       user,
       db,
       todos,
+      checkedDay,
       dispatch: this.dispatch,
     };
 

@@ -41,6 +41,10 @@ export class TodoList extends Component {
     });
   }
 
+  componentDidUpdate() {
+    return null;
+  }
+
   render() {
     const { todos, user } = this.context;
 
