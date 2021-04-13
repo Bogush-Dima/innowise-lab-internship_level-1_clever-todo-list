@@ -33,7 +33,7 @@ export class Calendar extends Component {
     const daysWithDoneTodos = [];
 
     const toDateStr = (date) => {
-      const dateStr = date.toLocaleDateString();
+      const dateStr = date.toLocaleDateString('en-us');
       const arr = dateStr.split('/');
       const newArr = arr.map((num) => (+num < 10 ? `0${num}` : num));
       const res = `${newArr[2]}-${newArr[0]}-${newArr[1]}`;
@@ -68,7 +68,7 @@ export class Calendar extends Component {
 
     const clickDate = (event, key) => {
       const dateId = +event.currentTarget.id;
-      const dateStr = new Date(dateId).toLocaleDateString();
+      const dateStr = new Date(dateId).toLocaleDateString('en-us');
       const arr = dateStr.split('/');
       const newArr = arr.map((num) => (+num < 10 ? `0${num}` : num));
       const res = `${newArr[2]}-${newArr[0]}-${newArr[1]}`;
