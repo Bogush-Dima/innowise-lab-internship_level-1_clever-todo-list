@@ -176,7 +176,7 @@ export class CreateTodos extends Component {
       <StyledSection>
         <StyledMainUl>
           <StyledTitle>Todo List</StyledTitle>
-          {createTodosElements()}
+          {db ? createTodosElements() : null}
         </StyledMainUl>
         <StyledFormWrapper onMouseDown={clickFormOutside} createTodo={createTodo}>
           <StyledForm onSubmit={submit}>
