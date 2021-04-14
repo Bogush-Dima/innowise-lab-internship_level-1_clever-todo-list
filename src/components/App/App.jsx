@@ -1,33 +1,46 @@
-import React from 'react';
-import { Redirect, Route, Switch } from 'react-router';
-import { fireAuth } from 'utils/database';
+import React, { Component } from 'react';
+import { Route, Switch } from 'react-router';
+import { Context } from 'utils/context';
+import { SIGN_IN, SIGN_UP, TODOLIST, CREATE_TODOS } from 'utils/constants';
 import { Enter } from 'components/Enter/Enter';
 import { TodoList } from 'components/TodoList/TodoList';
 import { CreateTodos } from 'components/CreateTodos/CreateTodos';
 import { Header } from 'components/Header/Header';
+import { Loader } from 'components/Loader/Loader';
+import { ProtectedRoutes } from './ProtectedRoute/ProtectedRoutes/ProtectedRoutes';
 import { StyledGlobal, StyledApp } from './Styled';
 
-export const App = () => (
-  <>
-    <StyledGlobal />
-    <StyledApp>
-      <Header />
-      <Switch>
-        <Route
-          path="/signIn"
-          render={(routerProps) => <Enter method="signIn" {...routerProps} />}
-        />
-        <Route
-          path="/signUp"
-          render={(routerProps) => <Enter method="signUp" {...routerProps} />}
-        />
-        <Route path="/todolist" render={(routerProps) => <TodoList {...routerProps} />} />
-        <Route
-          path="/createTodos"
-          render={(routerProps) => <CreateTodos user={fireAuth.currentUser} {...routerProps} />}
-        />
-        <Redirect to="signIn" />
-      </Switch>
-    </StyledApp>
-  </>
-);
+export class App extends Component {
+  static contextType = Context;
+
+  render() {
+    const { userLoaded, user } = this.context;
+
+    return (
+      <>
+        <StyledGlobal />
+        <StyledApp>
+          {userLoaded ? (
+            <>
+              <Header />
+              <Switch>
+                <ProtectedRoutes path={`/${TODOLIST}`} component={TodoList} user={user} />
+                <ProtectedRoutes path={`/${CREATE_TODOS}`} component={CreateTodos} user={user} />
+                <Route
+                  path={`/${SIGN_IN}`}
+                  render={(routerProps) => <Enter method="signIn" {...routerProps} />}
+                />
+                <Route
+                  path={`/${SIGN_UP}`}
+                  render={(routerProps) => <Enter method="signUp" {...routerProps} />}
+                />
+              </Switch>
+            </>
+          ) : (
+            <Loader />
+          )}
+        </StyledApp>
+      </>
+    );
+  }
+}

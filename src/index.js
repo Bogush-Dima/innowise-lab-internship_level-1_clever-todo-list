@@ -5,11 +5,50 @@ import { BrowserRouter } from 'react-router-dom';
 import { Context } from 'utils/context';
 import { App } from 'components/App/App';
 import { CLICK_DAY, ENTER_USER, GET_DB, RESET_DATA, TOGGLE_CREATE_TODO } from 'utils/constants';
+import { fireAuth, fireDB } from 'utils/database';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: null, db: null, todos: [], checkedDay: '', createTodo: false };
+    this.state = {
+      user: false,
+      db: null,
+      todos: [],
+      checkedDay: '',
+      createTodo: false,
+      userLoaded: false,
+    };
+  }
+
+  // eslint-disable-next-line react/no-deprecated
+  componentDidMount() {
+    fireAuth.onAuthStateChanged((user) => {
+      if (user) {
+        const addKeyToTodoObj = (obj) => {
+          const keys = Object.keys(obj);
+          const res = keys.map((key) => {
+            // eslint-disable-next-line no-param-reassign
+            obj[key].key = key;
+            return obj[key];
+          });
+          return res;
+        };
+
+        fireDB.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
+          let result = {};
+          snapShot.forEach((el) => {
+            const { key } = el;
+            const value = el.val();
+            result = { ...result, [key]: addKeyToTodoObj(value) };
+          });
+          this.setState({ db: result });
+        });
+      }
+      this.setState({
+        user,
+        userLoaded: true,
+      });
+    });
   }
 
   dispatch = (action, payload = null) => {
@@ -20,6 +59,7 @@ class Main extends Component {
         break;
       }
       case ENTER_USER: {
+        localStorage.setItem('user', JSON.stringify(payload));
         this.setState({ user: { ...payload } });
         break;
       }
@@ -28,6 +68,7 @@ class Main extends Component {
         break;
       }
       case RESET_DATA: {
+        localStorage.removeItem('user');
         this.setState({ user: payload, db: payload, todos: [], checkedDay: '' });
         break;
       }
@@ -41,13 +82,14 @@ class Main extends Component {
   };
 
   render() {
-    const { user, db, todos, checkedDay, createTodo } = this.state;
+    const { user, db, todos, checkedDay, createTodo, userLoaded } = this.state;
     const value = {
       user,
       db,
       todos,
       checkedDay,
       createTodo,
+      userLoaded,
       dispatch: this.dispatch,
     };
 
