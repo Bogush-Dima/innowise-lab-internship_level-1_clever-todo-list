@@ -59,7 +59,6 @@ class Main extends Component {
         break;
       }
       case ENTER_USER: {
-        localStorage.setItem('user', JSON.stringify(payload));
         this.setState({ user: { ...payload } });
         break;
       }
@@ -68,7 +67,6 @@ class Main extends Component {
         break;
       }
       case RESET_DATA: {
-        localStorage.removeItem('user');
         this.setState({ user: payload, db: payload, todos: [], checkedDay: '' });
         break;
       }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, Redirect } from 'react-router';
 import { Context } from 'utils/context';
 import { SIGN_IN, SIGN_UP, TODOLIST, CREATE_TODOS } from 'utils/constants';
 import { Enter } from 'components/Enter/Enter';
@@ -34,6 +34,7 @@ export class App extends Component {
                   path={`/${SIGN_UP}`}
                   render={(routerProps) => <Enter method="signUp" {...routerProps} />}
                 />
+                <Redirect to={user ? 'todolist' : 'signIn'} />
               </Switch>
             </>
           ) : (
