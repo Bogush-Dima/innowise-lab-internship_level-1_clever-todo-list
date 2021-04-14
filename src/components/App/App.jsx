@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Redirect, Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router';
 import { Context } from 'utils/context';
-import { fireAuth } from 'utils/database';
+import { SIGN_IN, SIGN_UP, TODOLIST, CREATE_TODOS } from 'utils/constants';
 import { Enter } from 'components/Enter/Enter';
 import { TodoList } from 'components/TodoList/TodoList';
 import { CreateTodos } from 'components/CreateTodos/CreateTodos';
 import { Header } from 'components/Header/Header';
+import { Loader } from 'components/Loader/Loader';
+import { ProtectedRoutes } from './ProtectedRoute/ProtectedRoutes/ProtectedRoutes';
 import { StyledGlobal, StyledApp } from './Styled';
 
 export class App extends Component {
@@ -22,37 +24,20 @@ export class App extends Component {
             <>
               <Header />
               <Switch>
-                {user ? (
-                  <>
-                    <Route
-                      path="/todolist"
-                      render={(routerProps) => <TodoList {...routerProps} />}
-                    />
-                    <Route
-                      path="/createTodos"
-                      render={(routerProps) => (
-                        <CreateTodos user={fireAuth.currentUser} {...routerProps} />
-                      )}
-                    />
-                    {/* <Redirect to="todolist" /> */}
-                  </>
-                ) : (
-                  <>
-                    <Route
-                      path="/signIn"
-                      render={(routerProps) => <Enter method="signIn" {...routerProps} />}
-                    />
-                    <Route
-                      path="/signUp"
-                      render={(routerProps) => <Enter method="signUp" {...routerProps} />}
-                    />
-                    <Redirect to="signIn" />
-                  </>
-                )}
+                <ProtectedRoutes path={`/${TODOLIST}`} component={TodoList} user={user} />
+                <ProtectedRoutes path={`/${CREATE_TODOS}`} component={CreateTodos} user={user} />
+                <Route
+                  path={`/${SIGN_IN}`}
+                  render={(routerProps) => <Enter method="signIn" {...routerProps} />}
+                />
+                <Route
+                  path={`/${SIGN_UP}`}
+                  render={(routerProps) => <Enter method="signUp" {...routerProps} />}
+                />
               </Switch>
             </>
           ) : (
-            <div>LOADING.......</div>
+            <Loader />
           )}
         </StyledApp>
       </>
