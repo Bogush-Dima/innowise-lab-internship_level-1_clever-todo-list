@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
-import { fireAuth } from 'utils/database';
 import { Context } from 'utils/context';
+import { fireAuth } from 'utils/database';
 import {
   SIGN_IN,
   SIGN_UP,
