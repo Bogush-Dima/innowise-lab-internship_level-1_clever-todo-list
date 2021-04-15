@@ -28,13 +28,13 @@ export class App extends Component {
                 <ProtectedRoutes path={`/${CREATE_TODOS}`} component={CreateTodos} user={user} />
                 <Route
                   path={`/${SIGN_IN}`}
-                  render={(routerProps) => <Enter method="signIn" {...routerProps} />}
+                  render={(routerProps) => <Enter method={SIGN_IN} {...routerProps} />}
                 />
                 <Route
                   path={`/${SIGN_UP}`}
-                  render={(routerProps) => <Enter method="signUp" {...routerProps} />}
+                  render={(routerProps) => <Enter method={SIGN_UP} {...routerProps} />}
                 />
-                <Redirect to={user ? 'todolist' : 'signIn'} />
+                <Redirect to={user ? TODOLIST : SIGN_IN} />
               </Switch>
             </>
           ) : (
