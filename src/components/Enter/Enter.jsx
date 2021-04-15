@@ -33,39 +33,26 @@ export class Enter extends Component {
     const { email, password } = this.state;
     event.preventDefault();
 
-    if (method === SIGN_UP) {
-      fireAuth
-        .createUserWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-          dispatch(ENTER_USER, user);
-        })
-        .then(() => history.push(TODOLIST))
-        .catch((error) => {
-          const { code, message } = error;
-          if (code.search(TYPE_PASSWORD)) {
-            this.setState({ passwordErrorMessage: message });
-          } else {
-            this.setState({ emailErrorMessage: message });
-          }
-        });
-    } else {
-      fireAuth
-        .signInWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-          dispatch(ENTER_USER, user);
-        })
-        .then(() => {
-          history.push(TODOLIST);
-        })
-        .catch((error) => {
-          const { code, message } = error;
-          if (code.search(TYPE_PASSWORD)) {
-            this.setState({ passwordErrorMessage: message });
-          } else {
-            this.setState({ emailErrorMessage: message });
-          }
-        });
-    }
+    const enterUser = () => {
+      if (method === SIGN_UP) {
+        return fireAuth.createUserWithEmailAndPassword(email, password);
+      }
+      return fireAuth.signInWithEmailAndPassword(email, password);
+    };
+
+    enterUser()
+      .then(({ user }) => {
+        dispatch(ENTER_USER, user);
+      })
+      .then(() => history.push(TODOLIST))
+      .catch((error) => {
+        const { code, message } = error;
+        if (code.search(TYPE_PASSWORD)) {
+          this.setState({ passwordErrorMessage: message });
+        } else {
+          this.setState({ emailErrorMessage: message });
+        }
+      });
   };
 
   render() {
