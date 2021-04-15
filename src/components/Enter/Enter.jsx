@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { ENTER_USER } from 'utils/constants';
+import {
+  ENTER_USER,
+  SIGN_UP,
+  TODOLIST,
+  TYPE_PASSWORD,
+  TYPE_SUBMIT,
+  TYPE_EMAIL,
+} from 'utils/constants';
 import { Context } from 'utils/context';
 import { fireAuth } from 'utils/database';
 import { StyledWrapper, StyledForm, StyledInputWrapper, StyledInput, StyledBtn } from './Styled';
@@ -10,80 +17,71 @@ export class Enter extends Component {
     this.state = { email: '', password: '', emailErrorMessage: '', passwordErrorMessage: '' };
   }
 
-  render() {
-    const { method, history } = this.props;
-    const { email, password, emailErrorMessage, passwordErrorMessage } = this.state;
+  changeValue = (event) => {
+    event.preventDefault();
+    const { type } = event.target;
+    this.setState({
+      [type]: event.target.value,
+      emailErrorMessage: '',
+      passwordErrorMessage: '',
+    });
+  };
+
+  submit = (event) => {
     const { dispatch } = this.context;
+    const { method, history } = this.props;
+    const { email, password } = this.state;
+    event.preventDefault();
 
-    const changeValue = (event) => {
-      event.preventDefault();
-      const { type } = event.target;
-      this.setState({
-        [type]: event.target.value,
-        emailErrorMessage: '',
-        passwordErrorMessage: '',
-      });
-    };
-
-    const submit = (event) => {
-      event.preventDefault();
-
-      if (method === 'signUp') {
-        fireAuth
-          .createUserWithEmailAndPassword(email, password)
-          // eslint-disable-next-line no-shadow
-          .then(({ user }) => {
-            dispatch(ENTER_USER, user);
-          })
-          .then(() => history.push('todolist'))
-          // eslint-disable-next-line no-console
-          .catch((error) => {
-            const { code, message } = error;
-            if (code.search('password')) {
-              this.setState({ passwordErrorMessage: message });
-            } else {
-              this.setState({ emailErrorMessage: message });
-            }
-          });
-      } else {
-        fireAuth
-          .signInWithEmailAndPassword(email, password)
-          // eslint-disable-next-line no-shadow
-          .then(({ user }) => {
-            dispatch(ENTER_USER, user);
-          })
-          .then(() => {
-            history.push('todolist');
-          })
-          // eslint-disable-next-line no-console
-          .catch((error) => {
-            const { code, message } = error;
-            if (code.search('password')) {
-              this.setState({ passwordErrorMessage: message });
-            } else {
-              this.setState({ emailErrorMessage: message });
-            }
-          });
+    const enterUser = () => {
+      if (method === SIGN_UP) {
+        return fireAuth.createUserWithEmailAndPassword(email, password);
       }
+      return fireAuth.signInWithEmailAndPassword(email, password);
     };
+
+    enterUser()
+      .then(({ user }) => {
+        dispatch(ENTER_USER, user);
+      })
+      .then(() => history.push(TODOLIST))
+      .catch((error) => {
+        const { code, message } = error;
+        if (code.search(TYPE_PASSWORD)) {
+          this.setState({ passwordErrorMessage: message });
+        } else {
+          this.setState({ emailErrorMessage: message });
+        }
+      });
+  };
+
+  render() {
+    const { changeValue, submit } = this;
+    const { method } = this.props;
+    const { email, password, emailErrorMessage, passwordErrorMessage } = this.state;
 
     return (
       <StyledWrapper>
         <StyledForm>
           <StyledInputWrapper message={emailErrorMessage}>
-            <StyledInput type="email" onChange={changeValue} value={email} placeholder="email" />
+            <StyledInput
+              type={TYPE_EMAIL}
+              onChange={changeValue}
+              value={email}
+              placeholder={TYPE_EMAIL}
+            />
           </StyledInputWrapper>
           <StyledInputWrapper message={passwordErrorMessage}>
             <StyledInput
-              type="password"
+              type={TYPE_PASSWORD}
               onChange={changeValue}
               value={password}
-              placeholder="password"
+              placeholder={TYPE_PASSWORD}
             />
           </StyledInputWrapper>
 
-          <StyledBtn onClick={submit} type="submit">
-            {method === 'signUp' ? 'Sign Up' : 'Sign In'}
+          <StyledBtn onClick={submit} type={TYPE_SUBMIT}>
+            {method === SIGN_UP ? 'Sign Up' : 'Sign In'}
           </StyledBtn>
         </StyledForm>
       </StyledWrapper>

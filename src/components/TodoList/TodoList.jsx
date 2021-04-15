@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { fireDB } from 'utils/database';
 import { Context } from 'utils/context';
-import { GET_DB } from 'utils/constants';
+import { changeUserEmail } from 'utils/actions';
 import {
   StyledMainSection,
   StyledMainWrapper,
@@ -14,47 +14,40 @@ import {
 } from './Styled';
 import { Calendar } from './Calendar/Calendar';
 
-// eslint-disable-next-line react/prefer-stateless-function
 export class TodoList extends Component {
-  componentDidMount() {
-    const { user, dispatch } = this.context;
+  static contextType = Context;
 
-    const addKeyToTodoObj = (obj) => {
-      const keys = Object.keys(obj);
-      const res = keys.map((key) => {
-        // eslint-disable-next-line no-param-reassign
-        obj[key].key = key;
-        return obj[key];
-      });
-      return res;
-    };
+  clickDone = (event, key, date, done) => {
+    const { user } = this.context;
+    event.preventDefault();
+    fireDB
+      .ref(`/${changeUserEmail(user)}/${date}`)
+      .child(key)
+      .update({ done: !done });
+  };
 
-    fireDB.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
-      let result = {};
-      snapShot.forEach((el) => {
-        const { key } = el;
-        const value = el.val();
-        result = { ...result, [key]: addKeyToTodoObj(value) };
-      });
-
-      dispatch(GET_DB, result);
-    });
-  }
-
-  componentDidUpdate() {
-    return null;
-  }
+  createTodosElements = (bool) => {
+    const { clickDone } = this;
+    const { todos } = this.context;
+    return todos.map(
+      ({ todoName, todoDescription, key, done, date }) =>
+        done === bool && (
+          <StyledTodo key={key}>
+            <StyledTodoName
+              onClick={(event) => clickDone(event, key, date, done)}
+              done={bool ? 'orange' : 'transparent'}
+            >
+              {todoName}
+            </StyledTodoName>
+            <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
+          </StyledTodo>
+        )
+    );
+  };
 
   render() {
-    const { todos, user } = this.context;
-
-    const clickDone = (event, key, date, done) => {
-      event.preventDefault();
-      fireDB
-        .ref(`/${user.email.replace('.', '_')}/${date}`)
-        .child(key)
-        .update({ done: !done });
-    };
+    const { createTodosElements } = this;
+    const { todos } = this.context;
 
     return (
       <StyledMainSection>
@@ -62,51 +55,11 @@ export class TodoList extends Component {
         <StyledMainWrapper>
           <StyledTodos>
             <StyledTodosTitle>In progress</StyledTodosTitle>
-            <StyledTodoList>
-              {todos.length ? (
-                todos.map(({ todoName, todoDescription, key, done, date }) =>
-                  !done ? (
-                    <StyledTodo key={key}>
-                      <StyledTodoName
-                        onClick={(event) => clickDone(event, key, date, done)}
-                        done="transparent"
-                      >
-                        {todoName}
-                      </StyledTodoName>
-                      <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
-                    </StyledTodo>
-                  ) : (
-                    ''
-                  )
-                )
-              ) : (
-                <p>Empty</p>
-              )}
-            </StyledTodoList>
+            <StyledTodoList>{todos.length ? createTodosElements(false) : null}</StyledTodoList>
           </StyledTodos>
           <StyledTodos>
             <StyledTodosTitle>Done</StyledTodosTitle>
-            <StyledTodoList>
-              {todos.length ? (
-                todos.map(({ todoName, todoDescription, key, done, date }) =>
-                  done ? (
-                    <StyledTodo key={key}>
-                      <StyledTodoName
-                        onClick={(event) => clickDone(event, key, date, done)}
-                        done="orange"
-                      >
-                        {todoName}
-                      </StyledTodoName>
-                      <StyledTodoDesc>{todoDescription}</StyledTodoDesc>
-                    </StyledTodo>
-                  ) : (
-                    ''
-                  )
-                )
-              ) : (
-                <p>Empty</p>
-              )}
-            </StyledTodoList>
+            <StyledTodoList>{todos.length ? createTodosElements(true) : null}</StyledTodoList>
           </StyledTodos>
         </StyledMainWrapper>
       </StyledMainSection>

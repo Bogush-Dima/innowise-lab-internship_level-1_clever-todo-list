@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { CLICK_DAY } from 'utils/constants';
 import { Context } from 'utils/context';
-import { fireAuth, fireDB } from 'utils/database';
+import { changeUserEmail, formattingDateStrForFirebase } from 'utils/actions';
+import { fireDB } from 'utils/database';
 import {
   StyledDayCard,
   StyledDay,
@@ -16,32 +17,18 @@ import {
 export class Calendar extends Component {
   static contextType = Context;
 
-  componentDidUpdate() {
-    return null;
-  }
+  getCurrentMonthStr = () => new Date().toLocaleDateString('en-us', { month: 'long' });
 
-  render() {
-    const { dispatch, user, checkedDay } = this.context;
+  createAllDaysArr = () => {
     const today = new Date();
-    const todayYear = today.getFullYear();
-    const todayMonthStr = today.toLocaleDateString('en-us', { month: 'long' });
-    const todayMonthNum = today.getMonth();
-    const todayDate = today.getDate();
-    const lastDay = new Date(todayYear, todayMonthNum + 1, 0).getDate();
+    const currentYear = today.getFullYear();
+    const currentMonthNum = today.getMonth();
+    const currentDate = today.getDate();
+    const lastDay = new Date(currentYear, currentMonthNum + 1, 0).getDate();
     const allDaysArr = [];
-    const daysWithInProcessTodos = [];
-    const daysWithDoneTodos = [];
 
-    const toDateStr = (date) => {
-      const dateStr = date.toLocaleDateString('en-us');
-      const arr = dateStr.split('/');
-      const newArr = arr.map((num) => (+num < 10 ? `0${num}` : num));
-      const res = `${newArr[2]}-${newArr[0]}-${newArr[1]}`;
-      return res;
-    };
-
-    for (let i = todayDate; i <= lastDay; i += 1) {
-      const thisDate = new Date(todayYear, todayMonthNum, i);
+    for (let i = currentDate; i <= lastDay; i += 1) {
+      const thisDate = new Date(currentYear, currentMonthNum, i);
 
       const obj = {
         key: Number(thisDate),
@@ -49,13 +36,20 @@ export class Calendar extends Component {
         day: thisDate.toLocaleDateString('en-us', {
           weekday: 'long',
         }),
-        dateStr: toDateStr(thisDate),
+        dateStr: formattingDateStrForFirebase(thisDate),
       };
       allDaysArr.push(obj);
     }
+    return allDaysArr;
+  };
+
+  divisionDaysByTasksTypes = () => {
+    const { user } = this.context;
+    const daysWithInProcessTodos = [];
+    const daysWithDoneTodos = [];
 
     if (user) {
-      fireDB.ref(`/${user.email.replace('.', '_')}`).on('value', (snapShot) => {
+      fireDB.ref(`/${changeUserEmail(user)}`).on('value', (snapShot) => {
         snapShot.forEach((obj) => {
           const val = obj.val();
           const dest = Object.values(val);
@@ -65,45 +59,51 @@ export class Calendar extends Component {
         });
       });
     }
+    return { daysWithInProcessTodos, daysWithDoneTodos };
+  };
 
-    const clickDate = (event, key) => {
-      const dateId = +event.currentTarget.id;
-      const dateStr = new Date(dateId).toLocaleDateString('en-us');
-      const arr = dateStr.split('/');
-      const newArr = arr.map((num) => (+num < 10 ? `0${num}` : num));
-      const res = `${newArr[2]}-${newArr[0]}-${newArr[1]}`;
+  clickDate = (event, key) => {
+    const { dispatch, user } = this.context;
+    const dateId = +event.currentTarget.id;
+    const keyForTodos = formattingDateStrForFirebase(new Date(dateId));
 
-      fireDB
-        .ref(`/${fireAuth.currentUser.email.replace('.', '_')}/${res}`)
-        .on('value', (snapShot) => {
-          // eslint-disable-next-line no-shadow
-          const todos = [];
-          snapShot.forEach((obj) => {
-            todos.push({ key: obj.key, ...obj.val() });
-          });
-          dispatch(CLICK_DAY, { todos, key });
-        });
-    };
+    fireDB.ref(`/${changeUserEmail(user)}/${keyForTodos}`).on('value', (snapShot) => {
+      const todos = [];
+      snapShot.forEach((obj) => {
+        todos.push({ key: obj.key, ...obj.val() });
+      });
+      dispatch(CLICK_DAY, { todos, key });
+    });
+  };
 
-    const findFun = (elem, dateStr) => elem === dateStr;
+  findFun = (elem, dateStr) => elem === dateStr;
+
+  render() {
+    const {
+      getCurrentMonthStr,
+      createAllDaysArr,
+      divisionDaysByTasksTypes,
+      clickDate,
+      findFun,
+    } = this;
+    const { checkedDay } = this.context;
+    const { daysWithInProcessTodos, daysWithDoneTodos } = divisionDaysByTasksTypes();
 
     return (
       <StyledWrapper>
-        <StyledMonth>{todayMonthStr}</StyledMonth>
+        <StyledMonth>{getCurrentMonthStr()}</StyledMonth>
         <StyledDaysWrapper>
-          {allDaysArr.map(({ key, date, day, dateStr }) => (
+          {createAllDaysArr().map(({ key, date, day, dateStr }) => (
             <StyledDayCard id={key} onClick={(event) => clickDate(event, key)} key={key}>
               <StyledDay isChecked={checkedDay === key}>
                 <p>{date}</p>
                 <p>{day}</p>
               </StyledDay>
               <StyledDotsWrapper>
-                {daysWithDoneTodos.some((el) => findFun(el, dateStr)) ? <StyledDoneDots /> : ''}
+                {daysWithDoneTodos.some((el) => findFun(el, dateStr)) ? <StyledDoneDots /> : null}
                 {daysWithInProcessTodos.some((el) => findFun(el, dateStr)) ? (
                   <StyledInProgressDots />
-                ) : (
-                  ''
-                )}
+                ) : null}
               </StyledDotsWrapper>
             </StyledDayCard>
           ))}
