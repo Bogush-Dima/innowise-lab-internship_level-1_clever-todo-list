@@ -8,3 +8,6 @@ export const SIGN_UP = 'signUp';
 export const SIGN_OUT = 'signOut';
 export const TODOLIST = 'todolist';
 export const CREATE_TODOS = 'createTodos';
+export const TYPE_SUBMIT = 'submit';
+export const TYPE_EMAIL = 'email';
+export const TYPE_PASSWORD = 'password';
